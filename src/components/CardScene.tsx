@@ -158,10 +158,10 @@ export default function CardScene(props: SceneProps) {
 
       <OrbitControls
         enableRotate={false}
-        enableZoom={false}
+        enableZoom={true}
         enablePan={false}
-        minDistance={5}
-        maxDistance={5}
+        minDistance={3}
+        maxDistance={9}
       />
     </Canvas>
   );
