@@ -94,9 +94,11 @@ function Studio() {
                 visibility: showTextBubble ? "visible" : "hidden",
               } as CSSProperties}
             >
-              <div className="bubble-card">
-                <p className="bubble-text">Floating product message</p>
-              </div>
+              <img
+                src="/TXT MESSAGE.png"
+                alt="Text bubble"
+                className="block max-w-[18rem] w-auto rounded-3xl shadow-xl"
+              />
             </div>
           </div>
         </div>

@@ -28,8 +28,12 @@ function useCardTexture(url: string | null) {
     const loader = new THREE.TextureLoader();
     const tex = loader.load(
       url,
-      () => {
-        tex.needsUpdate = true;
+      (loaded) => {
+        loaded.colorSpace = THREE.SRGBColorSpace;
+        if ("encoding" in loaded) {
+          loaded.encoding = THREE.sRGBEncoding;
+        }
+        loaded.needsUpdate = true;
       },
       undefined,
       (err) => {
@@ -37,6 +41,9 @@ function useCardTexture(url: string | null) {
       },
     );
     tex.colorSpace = THREE.SRGBColorSpace;
+    if ("encoding" in tex) {
+      tex.encoding = THREE.sRGBEncoding;
+    }
     tex.anisotropy = 16;
     return tex;
   }, [url]);
