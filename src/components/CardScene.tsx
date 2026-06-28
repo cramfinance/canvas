@@ -4,6 +4,7 @@ import {
   ContactShadows,
   Environment,
   OrbitControls,
+  RoundedBox,
 } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -99,15 +100,16 @@ function Card({
   const height = width / 1.586;
 
   return (
-    <mesh
+    <RoundedBox
       ref={meshRef}
       castShadow
       receiveShadow
+      args={[width, height, depth * 0.1]}
+      radius={0.12}
+      smoothness={8}
       material={materials}
       position={[0, 0, 0]}
-    >
-      <boxGeometry args={[width, height, depth * 0.1]} />
-    </mesh>
+    />
   );
 }
 
