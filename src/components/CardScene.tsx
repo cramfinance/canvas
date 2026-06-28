@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   ContactShadows,
@@ -26,25 +26,15 @@ function useCardTexture(url: string | null) {
   return useMemo(() => {
     if (!url) return null;
     const loader = new THREE.TextureLoader();
-    const tex = loader.load(
-      url,
-      (loaded) => {
-        loaded.colorSpace = THREE.SRGBColorSpace;
-        if ("encoding" in loaded) {
-          loaded.encoding = THREE.sRGBEncoding;
-        }
-        loaded.needsUpdate = true;
-      },
-      undefined,
-      (err) => {
-        console.error("Failed to load texture:", url, err);
-      },
-    );
+    const tex = loader.load(url, undefined, undefined, (err) => {
+      console.error("Failed to load texture:", url, err);
+    });
     tex.colorSpace = THREE.SRGBColorSpace;
     if ("encoding" in tex) {
       tex.encoding = THREE.sRGBEncoding;
     }
     tex.anisotropy = 16;
+    tex.needsUpdate = true;
     return tex;
   }, [url]);
 }
@@ -59,6 +49,17 @@ function Card({
   const meshRef = useRef<THREE.Mesh>(null);
   const front = useCardTexture(frontUrl);
   const back = useCardTexture(backUrl);
+
+  useEffect(() => {
+    return () => {
+      if (front?.isTexture && front.image?.src.startsWith("blob:")) {
+        URL.revokeObjectURL(front.image.src);
+      }
+      if (back?.isTexture && back.image?.src.startsWith("blob:")) {
+        URL.revokeObjectURL(back.image.src);
+      }
+    };
+  }, [front, back]);
 
   useFrame((_, delta) => {
     if (meshRef.current && spinning) {

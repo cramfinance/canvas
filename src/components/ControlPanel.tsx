@@ -38,9 +38,13 @@ function ImageDrop({
   const handle = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => onChange(reader.result as string);
-    reader.readAsDataURL(file);
+
+    if (url?.startsWith("blob:")) {
+      URL.revokeObjectURL(url);
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    onChange(objectUrl);
   };
 
   return (
@@ -50,7 +54,12 @@ function ImageDrop({
         {url && (
           <button
             type="button"
-            onClick={() => onChange(null)}
+            onClick={() => {
+              if (url.startsWith("blob:")) {
+                URL.revokeObjectURL(url);
+              }
+              onChange(null);
+            }}
             className="text-[0.65rem] text-muted-foreground hover:text-foreground transition"
           >
             clear

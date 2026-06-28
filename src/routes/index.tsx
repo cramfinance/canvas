@@ -95,8 +95,8 @@ function Studio() {
               } as CSSProperties}
             >
               <img
-                src="/TXT MESSAGE.png"
-                alt="Text bubble"
+                src="/txt-message.png"
+                alt="text bubble"
                 className="block max-w-[18rem] w-auto rounded-3xl shadow-xl"
               />
             </div>
