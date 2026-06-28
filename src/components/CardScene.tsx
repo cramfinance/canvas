@@ -53,7 +53,7 @@ function Card({
       castShadow
       receiveShadow
       args={[width, height, depth * 0.1]}
-      radius={0.08}
+      radius={0}
       smoothness={4}
       position={[0, 0, 0]}
     >
