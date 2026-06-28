@@ -26,7 +26,16 @@ function useCardTexture(url: string | null) {
   return useMemo(() => {
     if (!url) return null;
     const loader = new THREE.TextureLoader();
-    const tex = loader.load(url);
+    const tex = loader.load(
+      url,
+      () => {
+        tex.needsUpdate = true;
+      },
+      undefined,
+      (err) => {
+        console.error("Failed to load texture:", url, err);
+      },
+    );
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = 16;
     return tex;

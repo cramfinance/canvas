@@ -86,7 +86,7 @@ function Studio() {
         </div>
 
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute bottom-24 right-8 z-40 pointer-events-none">
+          <div className="absolute bottom-24 right-8 z-40">
             <div
               className={`bubble-overlay ${showTextBubble ? "bubble-enter" : "bubble-exit"}`}
               style={{
@@ -94,17 +94,11 @@ function Studio() {
                 visibility: showTextBubble ? "visible" : "hidden",
               } as CSSProperties}
             >
-              <img
-                src="/TXT%20MESSAGE.png"
-                alt="Text bubble"
-                className="block max-w-[18rem] w-auto"
-              />
+              <div className="bubble-card">
+                <p className="bubble-text">Floating product message</p>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="pointer-events-none absolute bottom-5 right-5 z-50 rounded-md border border-border bg-panel/70 backdrop-blur px-3 py-1.5">
-          <p className="label-mono">{spinning ? "● Recording spin" : "○ Paused"}</p>
         </div>
       </main>
 
