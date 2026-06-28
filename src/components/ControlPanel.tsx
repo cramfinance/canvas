@@ -17,6 +17,10 @@ interface Props {
   setEnv: (v: EnvPreset) => void;
   background: string;
   setBackground: (v: string) => void;
+  showTextBubble: boolean;
+  setShowTextBubble: (v: boolean) => void;
+  bubbleScale: number;
+  setBubbleScale: (v: number) => void;
   onReset: () => void;
 }
 
@@ -203,6 +207,29 @@ export default function ControlPanel(props: Props) {
             step={0.05}
             onChange={props.setSpeed}
             display={`${props.speed.toFixed(2)}×`}
+          />
+        </section>
+
+        <section className="space-y-5">
+          <div className="flex items-center justify-between">
+            <h2 className="label-mono">Text Overlay</h2>
+            <button
+              type="button"
+              onClick={() => props.setShowTextBubble(!props.showTextBubble)}
+              className="inline-flex items-center rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90 transition"
+            >
+              {props.showTextBubble ? "Hide" : "Show"}
+            </button>
+          </div>
+
+          <Slider
+            label="Text Bubble Size"
+            value={props.bubbleScale}
+            min={0.1}
+            max={5.0}
+            step={0.1}
+            onChange={props.setBubbleScale}
+            display={`${props.bubbleScale.toFixed(1)}×`}
           />
         </section>
 
