@@ -34,8 +34,8 @@ const DEFAULTS = {
 };
 
 function Studio() {
-  const [frontUrl, setFrontUrl] = useState<string | null>("/frontcard.png");
-  const [backUrl, setBackUrl] = useState<string | null>("/backcard.png");
+  const [frontUrl, setFrontUrl] = useState<string | null>(null);
+  const [backUrl, setBackUrl] = useState<string | null>(null);
   const [depth, setDepth] = useState(DEFAULTS.depth);
   const [spinning, setSpinning] = useState(DEFAULTS.spinning);
   const [speed, setSpeed] = useState(DEFAULTS.speed);
