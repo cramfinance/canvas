@@ -4,8 +4,8 @@ import {
   ContactShadows,
   Environment,
   OrbitControls,
+  RoundedBox,
   useTexture,
-  RoundedBox
 } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -22,7 +22,6 @@ interface SceneProps {
 }
 
 const FALLBACK_COLOR = "#1a1a22";
-// A tiny 1x1 transparent pixel to act as a placeholder before you upload a card
 const BLANK_TEX = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
 function Card({
@@ -40,13 +39,11 @@ function Card({
     }
   });
 
-  // Drei's native suspense-based texture loading. This fixes the upload bug permanently.
   const frontTex = useTexture(frontUrl || BLANK_TEX);
   const backTex = useTexture(backUrl || BLANK_TEX);
   frontTex.colorSpace = THREE.SRGBColorSpace;
   backTex.colorSpace = THREE.SRGBColorSpace;
 
-  // Standard credit-card aspect ratio: 85.6 x 53.98 mm ≈ 1.586
   const width = 3.2;
   const height = width / 1.586;
 
@@ -56,32 +53,49 @@ function Card({
       castShadow
       receiveShadow
       args={[width, height, depth * 0.1]}
-      radius={0.08}
+      radius={0}
       smoothness={4}
       position={[0, 0, 0]}
     >
-      {/* Materials 0-3 map to the curved plastic side edges */}
-      <meshStandardMaterial attach="material-0" color="#0a0a0a" roughness={0.6} metalness={0.4} />
-      <meshStandardMaterial attach="material-1" color="#0a0a0a" roughness={0.6} metalness={0.4} />
-      <meshStandardMaterial attach="material-2" color="#0a0a0a" roughness={0.6} metalness={0.4} />
-      <meshStandardMaterial attach="material-3" color="#0a0a0a" roughness={0.6} metalness={0.4} />
-      
-      {/* Materials 4 & 5 map to the Front and Back faces. transparent={true} allows the PNG curves to work. */}
-      <meshStandardMaterial 
-        attach="material-4" 
-        color={frontUrl ? "#ffffff" : FALLBACK_COLOR} 
-        map={frontUrl ? frontTex : null} 
-        roughness={0.55} 
-        metalness={0.25} 
-        transparent={true} 
+      <meshStandardMaterial
+        attach="material-0"
+        color="#0a0a0a"
+        roughness={0.6}
+        metalness={0.4}
       />
-      <meshStandardMaterial 
-        attach="material-5" 
-        color={backUrl ? "#ffffff" : FALLBACK_COLOR} 
-        map={backUrl ? backTex : null} 
-        roughness={0.55} 
-        metalness={0.25} 
-        transparent={true} 
+      <meshStandardMaterial
+        attach="material-1"
+        color="#0a0a0a"
+        roughness={0.6}
+        metalness={0.4}
+      />
+      <meshStandardMaterial
+        attach="material-2"
+        color="#0a0a0a"
+        roughness={0.6}
+        metalness={0.4}
+      />
+      <meshStandardMaterial
+        attach="material-3"
+        color="#0a0a0a"
+        roughness={0.6}
+        metalness={0.4}
+      />
+      <meshStandardMaterial
+        attach="material-4"
+        color={frontUrl ? "#ffffff" : FALLBACK_COLOR}
+        map={frontUrl ? frontTex : null}
+        roughness={0.55}
+        metalness={0.25}
+        transparent={true}
+      />
+      <meshStandardMaterial
+        attach="material-5"
+        color={backUrl ? "#ffffff" : FALLBACK_COLOR}
+        map={backUrl ? backTex : null}
+        roughness={0.55}
+        metalness={0.25}
+        transparent={true}
       />
     </RoundedBox>
   );
@@ -103,7 +117,7 @@ export default function CardScene(props: SceneProps) {
     <Canvas
       shadows
       dpr={[1, 2]}
-      camera={{ position: [0, 1.2, 5], fov: 35 }}
+      camera={{ position: [0, 0, 5], fov: 35 }}
       gl={{ antialias: true }}
     >
       <color attach="background" args={[props.background]} />
@@ -133,11 +147,11 @@ export default function CardScene(props: SceneProps) {
       />
 
       <OrbitControls
+        enableRotate={false}
+        enableZoom={true}
         enablePan={false}
         minDistance={3}
         maxDistance={9}
-        minPolarAngle={Math.PI / 6}
-        maxPolarAngle={Math.PI / 1.8}
       />
     </Canvas>
   );
