@@ -127,7 +127,7 @@ export default function CardScene(props: SceneProps) {
     <Canvas
       shadows
       dpr={[1, 2]}
-      camera={{ position: [0, 1.2, 5], fov: 35 }}
+      camera={{ position: [0, 0, 5], fov: 35 }}
       gl={{ antialias: true }}
     >
       <color attach="background" args={[props.background]} />
@@ -157,11 +157,11 @@ export default function CardScene(props: SceneProps) {
       />
 
       <OrbitControls
+        enableRotate={false}
+        enableZoom={false}
         enablePan={false}
-        minDistance={3}
-        maxDistance={9}
-        minPolarAngle={Math.PI / 6}
-        maxPolarAngle={Math.PI / 1.8}
+        minDistance={5}
+        maxDistance={5}
       />
     </Canvas>
   );
