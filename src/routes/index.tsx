@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useState, type CSSProperties } from "react";
 import ControlPanel from "@/components/ControlPanel";
 import type { EnvPreset } from "@/components/CardScene";
 
@@ -41,6 +41,8 @@ function Studio() {
   const [speed, setSpeed] = useState(DEFAULTS.speed);
   const [env, setEnv] = useState<EnvPreset>(DEFAULTS.env);
   const [background, setBackground] = useState(DEFAULTS.background);
+  const [showTextBubble, setShowTextBubble] = useState(false);
+  const [bubbleScale, setBubbleScale] = useState(1.0);
 
   const reset = () => {
     setDepth(DEFAULTS.depth);
@@ -83,6 +85,23 @@ function Studio() {
           </div>
         </div>
 
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute bottom-8 right-8 z-50 pointer-events-none">
+            <div
+              className={`bubble-overlay ${showTextBubble ? "bubble-enter" : "bubble-exit"}`}
+              style={{
+                "--bubble-scale": bubbleScale,
+              } as CSSProperties}
+            >
+              <img
+                src="/TXT MESSAGE.png"
+                alt="Text bubble"
+                className="block max-w-[18rem] w-auto"
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="pointer-events-none absolute bottom-5 right-5 rounded-md border border-border bg-panel/70 backdrop-blur px-3 py-1.5">
           <p className="label-mono">{spinning ? "● Recording spin" : "○ Paused"}</p>
         </div>
@@ -104,6 +123,10 @@ function Studio() {
           setEnv={setEnv}
           background={background}
           setBackground={setBackground}
+          showTextBubble={showTextBubble}
+          setShowTextBubble={setShowTextBubble}
+          bubbleScale={bubbleScale}
+          setBubbleScale={setBubbleScale}
           onReset={reset}
         />
       </div>
