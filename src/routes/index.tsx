@@ -97,7 +97,9 @@ function Studio() {
               <img
                 src="/txt-message.png"
                 alt="text bubble"
-                className="block max-w-[18rem] w-auto rounded-3xl shadow-xl"
+                className="block max-w-[18rem] w-auto select-none"
+                style={{ background: "transparent" }}
+                draggable={false}
               />
             </div>
           </div>
