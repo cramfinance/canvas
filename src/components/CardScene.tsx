@@ -1,11 +1,9 @@
-import { Suspense, useRef } from "react";
+import { Suspense, useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   ContactShadows,
   Environment,
   OrbitControls,
-  RoundedBox,
-  useTexture,
 } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -22,7 +20,20 @@ interface SceneProps {
 }
 
 const FALLBACK_COLOR = "#1a1a22";
-const BLANK_TEX = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
+
+function useCardTexture(url: string | null) {
+  return useMemo(() => {
+    if (!url) return null;
+    const loader = new THREE.TextureLoader();
+    loader.setCrossOrigin("anonymous");
+    const tex = loader.load(url, (t) => {
+      t.needsUpdate = true;
+    });
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 16;
+    return tex;
+  }, [url]);
+}
 
 function Card({
   frontUrl,
@@ -32,6 +43,8 @@ function Card({
   speed,
 }: Omit<SceneProps, "env" | "background">) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const front = useCardTexture(frontUrl);
+  const back = useCardTexture(backUrl);
 
   useFrame((_, delta) => {
     if (meshRef.current && spinning) {
@@ -39,65 +52,64 @@ function Card({
     }
   });
 
-  const frontTex = useTexture(frontUrl || BLANK_TEX);
-  const backTex = useTexture(backUrl || BLANK_TEX);
-  frontTex.colorSpace = THREE.SRGBColorSpace;
-  backTex.colorSpace = THREE.SRGBColorSpace;
+  const sideMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#0a0a0a",
+        roughness: 0.6,
+        metalness: 0.4,
+      }),
+    [],
+  );
+
+  const frontMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: front ? "#ffffff" : FALLBACK_COLOR,
+        map: front ?? null,
+        roughness: 0.55,
+        metalness: 0.25,
+      }),
+    [front],
+  );
+
+  const backMaterial = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: back ? "#ffffff" : FALLBACK_COLOR,
+        map: back ?? null,
+        roughness: 0.55,
+        metalness: 0.25,
+      }),
+    [back],
+  );
+
+  // BoxGeometry face order: +x, -x, +y, -y, +z (front), -z (back)
+  const materials = useMemo(
+    () => [
+      sideMaterial,
+      sideMaterial,
+      sideMaterial,
+      sideMaterial,
+      frontMaterial,
+      backMaterial,
+    ],
+    [sideMaterial, frontMaterial, backMaterial],
+  );
 
   const width = 3.2;
   const height = width / 1.586;
 
   return (
-    <RoundedBox
+    <mesh
       ref={meshRef}
       castShadow
       receiveShadow
-      args={[width, height, depth * 0.1]}
-      radius={0}
-      smoothness={4}
+      material={materials}
       position={[0, 0, 0]}
     >
-      <meshStandardMaterial
-        attach="material-0"
-        color="#0a0a0a"
-        roughness={0.6}
-        metalness={0.4}
-      />
-      <meshStandardMaterial
-        attach="material-1"
-        color="#0a0a0a"
-        roughness={0.6}
-        metalness={0.4}
-      />
-      <meshStandardMaterial
-        attach="material-2"
-        color="#0a0a0a"
-        roughness={0.6}
-        metalness={0.4}
-      />
-      <meshStandardMaterial
-        attach="material-3"
-        color="#0a0a0a"
-        roughness={0.6}
-        metalness={0.4}
-      />
-      <meshStandardMaterial
-        attach="material-4"
-        color={frontUrl ? "#ffffff" : FALLBACK_COLOR}
-        map={frontUrl ? frontTex : null}
-        roughness={0.55}
-        metalness={0.25}
-        transparent={true}
-      />
-      <meshStandardMaterial
-        attach="material-5"
-        color={backUrl ? "#ffffff" : FALLBACK_COLOR}
-        map={backUrl ? backTex : null}
-        roughness={0.55}
-        metalness={0.25}
-        transparent={true}
-      />
-    </RoundedBox>
+      <boxGeometry args={[width, height, depth * 0.1]} />
+    </mesh>
   );
 }
 
